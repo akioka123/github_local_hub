@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GitHub Local Hub</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar"><div class="brand"><span class="logo">GH</span><div>GitHub Local Hub<small>開発の状況を、一つの場所に。</small></div></div><span class="local">● LOCAL</span></header>
+  <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+  <div class="workspace">
+    <aside class="sidebar">
+      <h2>リポジトリ</h2>
+      <form id="repo-form"><label for="new-repo">リポジトリを追加</label><div class="input-row"><input id="new-repo" placeholder="owner/repository" required autocomplete="off" aria-label="owner/repository"><button type="submit" aria-label="追加">＋</button></div></form>
+      <div id="repositories"></div>
+      <button id="sync-all" class="wide secondary">すべて更新</button>
+      <section class="storage"><h2>ローカル保存</h2><p id="backup-status"></p><button id="backup-retry" class="secondary">バックアップを更新</button><p id="auth-status"></p></section>
+      <p class="footnote">GitHubが正本です。取得済みデータはオフラインでも確認できます。</p>
+    </aside>
+    <main>
+      <div class="page-heading"><div><p class="eyebrow">YOUR DEVELOPMENT INBOX</p><h1>Issue & PR</h1></div><span id="item-count" class="count">0件</span></div>
+      <section class="filters" aria-label="絞り込み">
+        <label>リポジトリ<select id="filter-repo"><option value="">すべて</option></select></label>
+        <label>種別<select id="filter-kind"><option value="">すべて</option><option value="issue">Issue</option><option value="pr">PR</option></select></label>
+        <label>状態<select id="filter-state"><option value="">すべて</option><option value="open">Open</option><option value="closed">Closed</option><option value="merged">Merged</option></select></label>
+        <button id="clear-filters" class="secondary">リセット</button>
+        <details class="label-picker"><summary>ラベル <span id="label-count"></span> <small>いずれか一致</small></summary><div id="labels"></div></details>
+      </section>
+      <div class="content"><section id="items" class="items" aria-label="IssueとPR一覧"></section><section id="detail" class="detail" aria-label="詳細"><div class="empty"><span class="empty-icon">↗</span><h2>状況を確認して、次の一手へ。</h2><p>リポジトリを登録して更新すると、<br>IssueとPRがここに並びます。</p></div></section></div>
+    </main>
+  </div>
+  <dialog id="send-dialog"><h2>GitHubにコメントを投稿</h2><p id="confirm-target"></p><pre id="confirm-body"></pre><p class="footnote">通常コメントとして投稿します。投稿の照合用IDが非表示のMarkdownコメントとして付加されます。</p><div class="dialog-actions"><button id="cancel-send" class="secondary">戻る</button><button id="confirm-send">この内容で投稿</button></div></dialog>
+</body>
+</html>

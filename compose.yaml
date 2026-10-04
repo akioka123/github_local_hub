@@ -1,0 +1,18 @@
+services:
+  hub:
+    build: .
+    ports:
+      - "127.0.0.1:${HUB_PORT:-8765}:8765"
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    volumes:
+      - ./data:/data
+      - ./backups:/backups
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    # Bind mounts may be owned by the host user rather than container root.
+    cap_add:
+      - DAC_OVERRIDE
