@@ -1,4 +1,7 @@
 import json
+import base64
+import hashlib
+import re
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import sqlite3
@@ -8,6 +11,17 @@ from .service import HubError
 
 
 STATIC = Path(__file__).parent / "static"
+
+
+def content_security_policy():
+    html = (STATIC / "index.html").read_text(encoding="utf-8")
+    sources = {}
+    for tag, asset in (("style", "styles"), ("script", "script")):
+        match = re.search(rf'<{tag} id="hub-{asset}">(.*?)</{tag}>', html, re.S)
+        digest = base64.b64encode(hashlib.sha256(match[1].encode()).digest()).decode() if match else None
+        sources[tag] = "'self'" + (f" 'sha256-{digest}'" if digest else "")
+    return (f"default-src 'self'; script-src {sources['script']}; style-src {sources['style']}; "
+            "img-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
 
 
 def make_server(hub, host="127.0.0.1", port=8765):
@@ -24,7 +38,7 @@ def make_server(hub, host="127.0.0.1", port=8765):
             self.send_header("Cache-Control", "no-store")
             self.send_header("X-Content-Type-Options", "nosniff")
             self.send_header("X-Frame-Options", "DENY")
-            self.send_header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
+            self.send_header("Content-Security-Policy", content_security_policy())
             self.end_headers()
             self.wfile.write(payload)
 

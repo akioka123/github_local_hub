@@ -13,7 +13,7 @@ function el(tag, className, text) {
 function notice(text) { $('#notice').textContent = text; $('#notice').hidden = !text; }
 function date(value) { return value ? new Date(value).toLocaleString('ja-JP') : '未同期'; }
 async function api(path, body) {
-  if (window.location.protocol === 'file:') {
+  if (!['http:', 'https:'].includes(window.location.protocol)) {
     throw new Error('HTMLだけのプレビューではデータ操作はできません。アプリを起動したURLを開いてください。');
   }
   const options = body === undefined ? {} : {method:'POST', headers:{'Content-Type':'application/json','X-Hub-Request':'1'}, body:JSON.stringify(body)};

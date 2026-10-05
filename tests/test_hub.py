@@ -299,11 +299,15 @@ class HTTPTests(unittest.TestCase):
             self.request("/../../hub/db.py")
         self.assertEqual(captured.exception.code, 404)
 
-    def test_index_html_alias_uses_relative_assets(self):
+    def test_index_html_alias_is_self_contained(self):
         with urllib.request.urlopen(self.base + "/index.html") as response:
             html = response.read().decode()
-            self.assertIn('href="./style.css"', html)
-            self.assertIn('src="./app.js"', html)
+            self.assertIn('<style id="hub-styles">', html)
+            self.assertIn('<script id="hub-script">', html)
+            self.assertNotIn('href="./style.css"', html)
+            self.assertNotIn('src="./app.js"', html)
+            self.assertIn("'sha256-", response.headers["Content-Security-Policy"])
+            self.assertNotIn("'unsafe-inline'", response.headers["Content-Security-Policy"])
 
 
 class PreviewStartupTests(unittest.TestCase):

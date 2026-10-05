@@ -102,8 +102,26 @@ def main():
                 expect(page.locator(".topbar")).to_have_css("background-color", "rgb(2, 6, 23)")
                 expect(page.locator("#notice")).to_contain_text("HTMLだけのプレビュー")
                 expect(page.locator("#sync-all")).to_be_disabled()
+                # Reproduce a standalone artifact preview: no sibling assets
+                # are served and every network request is blocked.
+                standalone = browser.new_page(viewport={"width": 1440, "height": 1000})
+                requested = []
+                standalone.on("request", lambda request: requested.append(request.url))
+                standalone.on("pageerror", lambda error: errors.append(str(error)))
+                standalone.route("**/*", lambda route: route.abort())
+                html = (Path(__file__).resolve().parents[1] / "hub/static/index.html").read_text()
+                standalone.set_content(html)
+                expect(standalone.locator(".topbar")).to_have_css("background-color", "rgb(2, 6, 23)")
+                expect(standalone.locator(".topbar")).to_have_css("height", "72px")
+                expect(standalone.locator(".logo svg")).to_have_css("width", "24px")
+                expect(standalone.locator("#notice")).to_contain_text("HTMLだけのプレビュー")
+                assert not requested, requested
+                assert not errors, errors
+                standalone.screenshot(path="/workspace/github-local-hub-standalone-preview.png")
+                standalone.set_viewport_size({"width": 390, "height": 844})
+                assert standalone.evaluate("document.documentElement.scrollWidth <= innerWidth")
                 browser.close()
-            print("Preview check passed: prefixed HTML/CSS/JS/API, register/sync/draft, static-only styles and API guidance.")
+            print("Preview check passed: prefix proxy, CSP hashes, static-only view, network-blocked standalone HTML, bounded SVG, mobile width.")
         finally:
             for server in servers:
                 server.shutdown()

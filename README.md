@@ -67,10 +67,10 @@ UIはTailwind CSS 3を使用しています。スタイルを変更するとき�
 ```sh
 npm ci
 npm run build:css
-# 編集しながら再生成する場合: npm run watch:css
+# JavaScriptのみを変更した場合: npm run build:html
 ```
 
-生成済みの `hub/static/style.css` もGitに保存します。Python起動・Docker起動時にはNode/npmも外部CDNも不要です。
+生成済みの `hub/static/style.css` と `hub/static/index.html` もGitに保存します。HTMLにはCSSとJavaScriptを埋め込み、CodexのHTML単体プレビューでも外部ファイルを参照せず表示できます。通常のHTTP配信では埋め込んだ内容のハッシュをCSPに設定します。Python起動・Docker起動時にはNode/npmも外部CDNも不要です。
 
 直接起動時の環境変数: `GITHUB_TOKEN`、`HUB_DATA`（既定data）、`HUB_BACKUPS`（既定backups）、`HUB_HOST`（既定127.0.0.1）、`HUB_PORT`（既定8765）。Docker内は0.0.0.0で待ち受け、Composeがホストの127.0.0.1だけに公開します。外部への公開は想定していません。
 
