@@ -1,0 +1,13 @@
+data/
+backups/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+.preview/
+.claude/settings.local.json
+.claude/worktrees/
+.codex/worktrees/
