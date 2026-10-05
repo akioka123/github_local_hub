@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>GitHub Local Hub</title>
-  <link rel="stylesheet" href="/style.css">
-  <script src="/app.js" defer></script>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -21,7 +21,7 @@
       <div><h2>リポジトリ</h2>
       <form id="repo-form"><label for="new-repo">リポジトリを追加</label><div class="input-row"><input id="new-repo" placeholder="owner/repository" required autocomplete="off" aria-label="owner/repository"><button type="submit" aria-label="追加">＋</button></div></form>
       </div><div id="repositories"></div>
-      <button id="sync-all" class="wide secondary">すべて更新</button>
+      <button id="sync-all" class="wide secondary" disabled>すべて更新</button>
       <section class="storage"><h2>ローカル保存</h2><p id="backup-status"></p><button id="backup-retry" class="secondary">バックアップを更新</button><p id="auth-status"></p></section>
       <p class="footnote">GitHubが正本です。取得済みデータはオフラインでも確認できます。</p>
     </aside>

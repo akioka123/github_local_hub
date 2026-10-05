@@ -1,8 +1,11 @@
 import copy
 import json
+import os
 from pathlib import Path
 import sqlite3
 import tempfile
+import subprocess
+import sys
 import threading
 import unittest
 from unittest.mock import patch
@@ -295,6 +298,37 @@ class HTTPTests(unittest.TestCase):
         with self.assertRaises(urllib.error.HTTPError) as captured:
             self.request("/../../hub/db.py")
         self.assertEqual(captured.exception.code, 404)
+
+    def test_index_html_alias_uses_relative_assets(self):
+        with urllib.request.urlopen(self.base + "/index.html") as response:
+            html = response.read().decode()
+            self.assertIn('href="./style.css"', html)
+            self.assertIn('src="./app.js"', html)
+
+
+class PreviewStartupTests(unittest.TestCase):
+    def test_dev_cli_starts_with_isolated_storage_and_custom_port(self):
+        with tempfile.TemporaryDirectory() as directory:
+            environment = dict(os.environ)
+            environment["PYTHONPATH"] = str(Path(__file__).resolve().parents[1])
+            environment["GITHUB_TOKEN"] = ""
+            for key in ("HUB_DATA", "HUB_BACKUPS", "HUB_HOST", "HUB_PORT"):
+                environment.pop(key, None)
+            process = subprocess.Popen([sys.executable, "-m", "hub.dev", "--port", "0"],
+                                       cwd=directory, env=environment,
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            try:
+                line = process.stdout.readline().strip()
+                self.assertTrue(line.startswith("GitHub Local Hub: http://localhost:"), line)
+                base = line.removeprefix("GitHub Local Hub: ")
+                with urllib.request.urlopen(base + "/api/health", timeout=3) as response:
+                    self.assertTrue(json.load(response)["ok"])
+                self.assertTrue((Path(directory) / ".preview/data/hub.sqlite3").is_file())
+                self.assertTrue((Path(directory) / ".preview/backups/latest.sqlite3").is_file())
+                self.assertFalse((Path(directory) / "data").exists())
+            finally:
+                process.terminate()
+                process.communicate(timeout=5)
 
 
 if __name__ == "__main__":

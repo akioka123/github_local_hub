@@ -56,6 +56,10 @@ python -m unittest discover -s tests -v
 node --check hub/static/app.js
 ```
 
+ウェブプレビューでもPythonのアプリサーバーを起動して [http://localhost:8765](http://localhost:8765) を開きます。`npm run dev` / `npm start` でも起動できます（`python3` が必要）。`npm run dev -- --port 3000` のようにプレビュー用のポートも指定できます。HTMLだけを開いた場合はレイアウトを確認できますが、DB・同期・下書き操作にはAPIサーバーが必要です。CSS・JavaScript・APIは現在の表示URLを基準に読み込み、サブパスを付けるプレビュープロキシでもその配下にアクセスします。
+
+`npm run dev` / `npm start` は `.preview/data/` と `.preview/backups/` に保存します。Docker用のDBと分けることで、Dockerが作ったファイルの所有者に影響されずに起動できます。`HUB_DATA` / `HUB_BACKUPS` が指定済みならその設定を使います。通常の保存先を使う実運用はDocker Composeまたは `python -m hub` で起動します。
+
 任意のブラウザ操作テストは、開発環境にPlaywrightとChromiumを用意して `PYTHONPATH=. python tests/browser_smoke.py`（`CHROMIUM_PATH` で実行ファイルを指定可能）。Dockerの保存・復元テストは `docker compose build` の後に `python tests/docker_smoke.py`。Docker-in-Dockerで外側から公開ポートへ届かない環境では `HUB_TEST_EXEC_HTTP=1` を指定します。いずれも一時DBと模擬データを使い、実GitHubへ投稿しません。CIでも単体・HTTP・Docker検証を実行します。
 
 UIはTailwind CSS 3を使用しています。スタイルを変更するときはNode.js 22以上を用意し、`ui/tailwind.css` と `tailwind.config.js` を編集して以下を実行します。

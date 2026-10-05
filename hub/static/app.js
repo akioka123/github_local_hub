@@ -13,9 +13,17 @@ function el(tag, className, text) {
 function notice(text) { $('#notice').textContent = text; $('#notice').hidden = !text; }
 function date(value) { return value ? new Date(value).toLocaleString('ja-JP') : '未同期'; }
 async function api(path, body) {
+  if (window.location.protocol === 'file:') {
+    throw new Error('HTMLだけのプレビューではデータ操作はできません。アプリを起動したURLを開いてください。');
+  }
   const options = body === undefined ? {} : {method:'POST', headers:{'Content-Type':'application/json','X-Hub-Request':'1'}, body:JSON.stringify(body)};
   let response;
-  try { response = await fetch(path, options); } catch { throw new Error('アプリとの接続が切れました。送信中の場合は、再投稿する前に更新して結果を確認してください。'); }
+  // Keep requests under the current mount point when a preview proxy uses a prefix.
+  const url = new URL(path.replace(/^\//, ''), new URL('./', window.location.href));
+  try { response = await fetch(url, options); } catch { throw new Error('アプリとの接続が切れました。送信中の場合は、再投稿する前に更新して結果を確認してください。'); }
+  if (!response.headers.get('Content-Type')?.includes('application/json')) {
+    throw new Error('アプリのAPIに接続できません。HTMLだけのプレビューではデータ操作はできないため、アプリを起動したURLを開いてください。');
+  }
   const result = await response.json();
   if (!response.ok) throw new Error(result.error || '処理に失敗しました。');
   return result;

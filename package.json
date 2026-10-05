@@ -2,6 +2,8 @@
   "name": "github-local-hub-ui",
   "private": true,
   "scripts": {
+    "dev": "python3 -m hub.dev",
+    "start": "python3 -m hub.dev",
     "build:css": "tailwindcss -i ui/tailwind.css -o hub/static/style.css --minify",
     "watch:css": "tailwindcss -i ui/tailwind.css -o hub/static/style.css --watch"
   },
