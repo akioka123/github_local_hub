@@ -15,6 +15,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build:css
+      - run: git diff --exit-code -- hub/static/style.css
       - run: python -m unittest discover -s tests -v
       - run: node --check hub/static/app.js
       - run: docker compose build

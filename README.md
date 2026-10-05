@@ -58,6 +58,16 @@ node --check hub/static/app.js
 
 任意のブラウザ操作テストは、開発環境にPlaywrightとChromiumを用意して `PYTHONPATH=. python tests/browser_smoke.py`（`CHROMIUM_PATH` で実行ファイルを指定可能）。Dockerの保存・復元テストは `docker compose build` の後に `python tests/docker_smoke.py`。Docker-in-Dockerで外側から公開ポートへ届かない環境では `HUB_TEST_EXEC_HTTP=1` を指定します。いずれも一時DBと模擬データを使い、実GitHubへ投稿しません。CIでも単体・HTTP・Docker検証を実行します。
 
+UIはTailwind CSS 3を使用しています。スタイルを変更するときはNode.js 22以上を用意し、`ui/tailwind.css` と `tailwind.config.js` を編集して以下を実行します。
+
+```sh
+npm ci
+npm run build:css
+# 編集しながら再生成する場合: npm run watch:css
+```
+
+生成済みの `hub/static/style.css` もGitに保存します。Python起動・Docker起動時にはNode/npmも外部CDNも不要です。
+
 直接起動時の環境変数: `GITHUB_TOKEN`、`HUB_DATA`（既定data）、`HUB_BACKUPS`（既定backups）、`HUB_HOST`（既定127.0.0.1）、`HUB_PORT`（既定8765）。Docker内は0.0.0.0で待ち受け、Composeがホストの127.0.0.1だけに公開します。外部への公開は想定していません。
 
 [要件](docs/requirements.md)、[設計](docs/design.md)、[検証結果](docs/gates/mvp-report.md)、[共通開発規約](AGENTS.md) を参照してください。Claude Codeは `CLAUDE.md` から同じ規約を読み込みます。

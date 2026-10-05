@@ -2,6 +2,8 @@
 
 個人用のローカルGitHub Issue/PR管理アプリ。Python標準ライブラリ、SQLite、素のJavaScriptを使用する。
 
+UIはTailwind CSS 3。`ui/tailwind.css` と `tailwind.config.js` を編集し、`npm ci` → `npm run build:css` で `hub/static/style.css` を生成する。生成CSSもコミットする。Node/npmはUI開発だけで使用し、アプリ実行時の依存にしない。
+
 - 要件: `docs/requirements.md`、設計: `docs/design.md`、工程: `docs/gates/gate-status.md`。
 - 起動: `docker compose up --build -d`。開発時は `python -m hub`。
 - 検証: `python -m unittest discover -s tests -v`、`node --check hub/static/app.js`。

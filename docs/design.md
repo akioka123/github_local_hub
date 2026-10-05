@@ -6,6 +6,8 @@
 
 UIは静的ファイル。GitHub本文を `textContent` で挿入する。GitHubリンクは検査済みリポジトリと番号から生成する。ブラウザはトークンを受け取らず、GitHubへ直接アクセスしない。
 
+スタイルはTailwind CSS 3を開発時にコンパイルし、生成済みCSSを同梱する。`ui/tailwind.css` のコンポーネントをTailwindのspacing/color/typographyトークンで統一する。デスクトップは一覧と詳細を別々にスクロールし、スマートフォンは縦に配置する。Node/npmはUI編集時のみ必要。
+
 ## データ
 
 | テーブル | 保存対象 |

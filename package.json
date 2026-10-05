@@ -1,0 +1,11 @@
+{
+  "name": "github-local-hub-ui",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ui/tailwind.css -o hub/static/style.css --minify",
+    "watch:css": "tailwindcss -i ui/tailwind.css -o hub/static/style.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

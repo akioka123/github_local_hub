@@ -42,3 +42,9 @@
 ## 保存と共有
 
 実装はローカルの `codex/local-hub-mvp` に保存済み。Gitのpushは403 Permission denied、GitHub連携のcreate-tree APIも403 Resource not accessible by integrationで拒否されたため、リモートブランチとPRは未作成。GitHub接続に書き込み権限が必要。変更パッチと追跡ファイルのみのソースZIPを別途用意し、DB・バックアップ・認証情報を含めずに取り込める状態にした。
+
+## UI更新: Tailwind CSS
+
+ユーザーの指示によりTailwind CSS 3.4.17を開発用依存として導入。色・余白・文字サイズ・フォーム・状態バッジを統一し、デスクトップの一覧と詳細を独立スクロールに変更した。スマートフォンでは縦配置。生成済みCSSを同梱し、実行時の外部CDNやNode/npmへの依存はない。
+
+`npm run build:css`、JavaScript構文確認、ブラウザE2Eに合格。1440pxと390pxの模擬データ表示を確認し、スマートフォン幅で横方向のはみ出しがないことを確認した。CIでCSSの再生成と差分チェックを追加した。
